@@ -76,6 +76,16 @@ public class AccountBalanceCacheExample {
   }
 
   public static void main(String[] args) {
-    new AccountBalanceCacheExample("YOUR_API_KEY", "YOUR_SECRET");
+//    new AccountBalanceCacheExample("YOUR_API_KEY", "YOUR_SECRET");
+
+    String apiKeyOne = "Xe4qyuwHMAROHOtRKbATdLVfZpFCB3w6Q717CgM6Ut2HivwkQg5PWWKTHtAPNQPD";
+    String secretOne = "NiHwfzQHCzTmjsReEzhSWkqH6iU10H1VDFO4FHxVdSXgYVXQeT7N7ShCKqGVuMyR";
+    Account account = BinanceApiClientFactory.newInstance(apiKeyOne, secretOne).newRestClient().getAccount();
+    System.out.println(account.getBalances());
+
+    String apiKeyTwo = "b4APbRTUEolX2tluV3AVKWER6JSjH527x7pRqIUWfnHIQJ5JoR3RP8kLOhfaUqDM";
+    String secretTwo = "ONvXr1rHMcygnELS0z0gEl9HlWBxJIHEbraceU0BRWwShXxWQdxMZlTQ8fJWGpUS";
+    Account account1 = BinanceApiClientFactory.newInstance(apiKeyTwo, secretTwo).newRestClient().getAccount();
+    System.out.println(account1.getBalances());
   }
 }
