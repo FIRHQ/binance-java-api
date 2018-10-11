@@ -6,6 +6,11 @@ import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.domain.account.Account;
 import com.binance.api.client.domain.account.AssetBalance;
 
+import com.binance.api.client.domain.account.Trade;
+import com.binance.api.client.domain.general.SymbolInfo;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -80,12 +85,40 @@ public class AccountBalanceCacheExample {
 
     String apiKeyOne = "Xe4qyuwHMAROHOtRKbATdLVfZpFCB3w6Q717CgM6Ut2HivwkQg5PWWKTHtAPNQPD";
     String secretOne = "NiHwfzQHCzTmjsReEzhSWkqH6iU10H1VDFO4FHxVdSXgYVXQeT7N7ShCKqGVuMyR";
-    Account account = BinanceApiClientFactory.newInstance(apiKeyOne, secretOne).newRestClient().getAccount();
-    System.out.println(account.getBalances());
+    System.out.println(new String(Base64.getEncoder().encode(apiKeyOne.getBytes())));
+    System.out.println(new String(Base64.getEncoder().encode(secretOne.getBytes())));
 
     String apiKeyTwo = "b4APbRTUEolX2tluV3AVKWER6JSjH527x7pRqIUWfnHIQJ5JoR3RP8kLOhfaUqDM";
     String secretTwo = "ONvXr1rHMcygnELS0z0gEl9HlWBxJIHEbraceU0BRWwShXxWQdxMZlTQ8fJWGpUS";
+    System.out.println(new String(Base64.getEncoder().encode(apiKeyTwo.getBytes())));
+    System.out.println(new String(Base64.getEncoder().encode(secretTwo.getBytes())));
+
+    BinanceApiRestClient binanceApiRestClient = BinanceApiClientFactory.newInstance(apiKeyOne, secretOne)
+        .newRestClient();
+
+    List<SymbolInfo> symbols = binanceApiRestClient.getExchangeInfo().getSymbols();
+
+    List<SymbolInfo> symbolInfos = filterSymbols("ETH", symbols);
+    for (SymbolInfo symbolInfo : symbolInfos) {
+      List<Trade> myTrades = binanceApiRestClient.getMyTrades(symbolInfo.getSymbol());
+      System.out.println(myTrades.size());
+    }
+
+    Account account = binanceApiRestClient.getAccount();
+    System.out.println(account.getBalances());
+
     Account account1 = BinanceApiClientFactory.newInstance(apiKeyTwo, secretTwo).newRestClient().getAccount();
     System.out.println(account1.getBalances());
+  }
+
+  private static List<SymbolInfo> filterSymbols(String eth, List<SymbolInfo> symbols) {
+    List<SymbolInfo> symbolInfos = new ArrayList<>();
+
+    for (SymbolInfo symbol : symbols) {
+      if(symbol.getSymbol().toLowerCase().startsWith(eth.toLowerCase())) {
+          symbolInfos.add(symbol);
+      }
+    }
+    return symbolInfos;
   }
 }
